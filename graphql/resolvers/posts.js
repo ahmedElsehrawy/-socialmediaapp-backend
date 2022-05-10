@@ -48,7 +48,11 @@ module.exports = {
         });
 
         let result = await post.save();
-        return result;
+        return {
+          ...result._doc,
+          createdAt: formatDate(result._doc.createdAt),
+          updatedAt: formatDate(result._doc.updatedAt),
+        };
       } catch (error) {
         throw new Error(error);
       }
