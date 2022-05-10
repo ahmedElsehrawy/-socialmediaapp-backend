@@ -28,7 +28,11 @@ module.exports = {
         if (!post) {
           throw new Error("Oppps post was not found");
         }
-        return post;
+        return {
+          ...post._doc,
+          createdAt: formatDate(post._doc.createdAt),
+          updateddAt: formatDate(post._doc.updateddAt),
+        };
       } catch (error) {
         throw new Error(error);
       }
