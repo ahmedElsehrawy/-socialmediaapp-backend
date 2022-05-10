@@ -93,7 +93,11 @@ module.exports = {
           });
         }
         await post.save();
-        return post;
+        return {
+          ...post._doc,
+          createdAt: formatDate(post._doc.createdAt),
+          updatedAt: formatDate(post._doc.updatedAt),
+        };
       } catch (error) {
         throw new Error(error);
       }
