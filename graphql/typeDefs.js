@@ -42,9 +42,15 @@ module.exports = gql`
     email: String!
   }
 
+  type PostPagination {
+    count: Int!
+    nodes: [Post!]
+  }
+
   type Query {
-    getPosts: [Post!]
+    getPosts(page: Int!): PostPagination!
     getPost(postId: ID!): Post!
+    me: User!
   }
 
   type Mutation {

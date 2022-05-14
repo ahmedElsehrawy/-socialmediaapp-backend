@@ -8,6 +8,8 @@ const {
 } = require("../../util/validators");
 const { SECRET_KEY } = require("../../config");
 const User = require("../../models/User");
+const checkAuth = require("../../util/check-auth");
+const formatDate = require("../../util/formatDate");
 
 const generateToken = (createdUser) => {
   return jwt.sign(
@@ -22,6 +24,22 @@ const generateToken = (createdUser) => {
 };
 
 module.exports = {
+  Query: {
+    me: async (_, args, context) => {
+      const user = checkAuth(context);
+
+      try {
+        const thatUser = await User.findById(user.id);
+
+        return {
+          ...thatUser._doc,
+          createdAt: formatDate(thatUser._doc.createdAt),
+        };
+      } catch (error) {
+        throw new Error(error);
+      }
+    },
+  },
   Mutaion: {
     login: async (_, args) => {
       const { username, password } = args;

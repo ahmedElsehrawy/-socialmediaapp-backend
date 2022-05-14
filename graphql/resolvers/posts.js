@@ -5,22 +5,32 @@ const formatDate = require("../../util/formatDate");
 
 module.exports = {
   Query: {
-    getPosts: async () => {
-      console.log("GET posts");
+    getPosts: async (_, args) => {
       try {
-        const posts = await Post.find().sort({ createdAt: -1 });
+        const posts = await Post.find()
+          .skip(args.page * 10)
+          .limit(10)
+          .sort({ createdAt: -1 });
 
-        return posts.map((post) => {
+        const postsCount = await Post.countDocuments();
+
+        let newPosts = posts.map((post) => {
           return {
             ...post._doc,
             createdAt: formatDate(post._doc.createdAt),
             updateddAt: formatDate(post._doc.updateddAt),
           };
         });
+
+        return {
+          count: postsCount,
+          nodes: newPosts,
+        };
       } catch (error) {
         throw new Error(error);
       }
     },
+
     getPost: async (_, args) => {
       const { postId } = args;
       try {
